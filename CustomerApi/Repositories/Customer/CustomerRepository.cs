@@ -16,17 +16,67 @@ namespace CustomerApi.Repositories.Customer
 
         public CustomerDataServiceViewModel CreateCustomerData(CustomerDataInViewModel model, string connectString)
         {
-            throw new NotImplementedException();
+            StringBuilder sqlcmd = new StringBuilder();
+            sqlcmd.Append(@"
+            insert into CustomerData (CustomerId,CustomerName,CustomerAddr)
+            values (@CustomerId,@CustomerName,@CustomerAddr) 
+            
+            IF (@@ROWCOUNT > 0)
+                BEGIN
+                select @CustomerId AS CustomerId,@CustomerName AS CustomerName,@CustomerAddr AS CustomerAddr                select CustomerId,CustomerName,CustomerAddr FROM CustomerData WITH(NOLOCK) WHERE  CustomerId=@CustomerId
+                END
+            ELSE
+                BEGIN
+                SELECT NULL
+                END");
+
+            var sqlExecutor = new SqlExecutor(new SqlConnection(connectString));
+            var result = sqlExecutor.Query<CustomerDataServiceViewModel>(sqlcmd.ToString(), model).FirstOrDefault();
+
+            return result;
         }
 
         public CustomerDataServiceViewModel DeleteCustomerData(CustomerDataInViewModel model, string connectString)
         {
-            throw new NotImplementedException();
+            StringBuilder sqlcmd = new StringBuilder();
+            sqlcmd.Append(@"
+            DELETE CustomerData WHERE CustomerId=@CustomerId
+            
+            IF (@@ROWCOUNT > 0)
+                BEGIN 
+                select @CustomerId AS CustomerId,@CustomerName AS CustomerName,@CustomerAddr AS CustomerAddr
+                END
+            ELSE
+                BEGIN
+                SELECT NULL
+                END");
+
+            var sqlExecutor = new SqlExecutor(new SqlConnection(connectString));
+            var result = sqlExecutor.Query<CustomerDataServiceViewModel>(sqlcmd.ToString(), model).FirstOrDefault();
+
+            return result;
         }
 
         public CustomerDataServiceViewModel EditCustomerData(CustomerDataInViewModel model, string connectString)
         {
-            throw new NotImplementedException();
+            StringBuilder sqlcmd = new StringBuilder();
+            sqlcmd.Append(@"
+            UPDATE CustomerData
+            SET CustomerName=@CustomerName,CustomerAddr=@CustomerAddr WHERE CustomerId=@CustomerId
+            
+            IF (@@ROWCOUNT > 0)
+                BEGIN 
+                select @CustomerId AS CustomerId,@CustomerName AS CustomerName,@CustomerAddr AS CustomerAddr
+                END
+            ELSE
+                BEGIN
+                SELECT NULL
+                END");
+
+            var sqlExecutor = new SqlExecutor(new SqlConnection(connectString));
+            var result = sqlExecutor.Query<CustomerDataServiceViewModel>(sqlcmd.ToString(), model).FirstOrDefault();
+
+            return result;
         }
 
         public IEnumerable<CustomerDataServiceViewModel> GetCustomerData(CustomerDataInViewModel model, string connectString)

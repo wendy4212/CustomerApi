@@ -24,17 +24,77 @@ namespace CustomerApi.Services.Customer
 
         public ApiStatusViewModel<CustomerDataServiceViewModel> CreateCustomerData(CustomerDataInViewModel model)
         {
-            throw new NotImplementedException();
+
+            var connectString = ConfigurationManager.ConnectionStrings["CustomerApiConnection"].ConnectionString;
+            var returnViewModel = new ApiStatusViewModel<CustomerDataServiceViewModel>();
+
+            try
+            {
+                returnViewModel.Data = this.CustomerRepository.CreateCustomerData(model, connectString);
+                if (returnViewModel.Data == null)
+                {
+                    throw new ApplicationException("建立顧客失敗(CreateCustomerData)");
+                }
+                returnViewModel.code = "200";
+            }
+            catch (Exception e)
+            {
+                returnViewModel.code = "500";
+                returnViewModel.message = e.ToString();
+            }
+
+            return returnViewModel;
+
         }
 
         public ApiStatusViewModel<CustomerDataServiceViewModel> DeleteCustomerData(CustomerDataInViewModel model)
         {
-            throw new NotImplementedException();
+
+            var connectString = ConfigurationManager.ConnectionStrings["CustomerApiConnection"].ConnectionString;
+            var returnViewModel = new ApiStatusViewModel<CustomerDataServiceViewModel>();
+
+            try
+            {
+                returnViewModel.Data = this.CustomerRepository.DeleteCustomerData(model, connectString);
+                if (returnViewModel.Data == null)
+                {
+                    throw new ApplicationException("刪除顧客失敗(DeleteCustomerData)");
+                }
+                returnViewModel.code = "200";
+            }
+            catch (Exception e)
+            {
+                returnViewModel.code = "500";
+                returnViewModel.message = e.ToString();
+            }
+
+            return returnViewModel;
+
         }
 
         public ApiStatusViewModel<CustomerDataServiceViewModel> EditCustomerData(CustomerDataInViewModel model)
         {
-            throw new NotImplementedException();
+
+            var connectString = ConfigurationManager.ConnectionStrings["CustomerApiConnection"].ConnectionString;
+            var returnViewModel = new ApiStatusViewModel<CustomerDataServiceViewModel>();
+
+            try
+            {
+                returnViewModel.Data = this.CustomerRepository.EditCustomerData(model, connectString);
+                if (returnViewModel.Data == null)
+                {
+                    throw new ApplicationException("編輯顧客失敗(EditCustomerData)");
+                }
+                returnViewModel.code = "200";
+            }
+            catch (Exception e)
+            {
+                returnViewModel.code = "500";
+                returnViewModel.message = e.ToString();
+            }
+
+            return returnViewModel;
+
         }
 
         public ApiStatusViewModel<IEnumerable<CustomerDataServiceViewModel>> GetCustomerData(CustomerDataInViewModel model)
