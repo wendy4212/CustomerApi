@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="master" Class="DataClassCustomerDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="WebSettings" ConnectionString="Data Source=(localdb)\CustomerApi;Initial Catalog=master;Integrated Security=True" SettingsObjectName="System.Configuration.ConfigurationManager.ConnectionStrings" SettingsPropertyName="CustomerApiConnection" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.CustomerData" Member="CustomerData">
+    <Type Name="CustomerData">
+      <Column Name="CustomerId" Type="System.String" DbType="Char(10)" CanBeNull="true" />
+      <Column Name="CustomerName" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="CustomerAddr" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+    </Type>
+  </Table>
+</Database>

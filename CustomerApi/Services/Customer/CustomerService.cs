@@ -30,12 +30,15 @@ namespace CustomerApi.Services.Customer
 
             try
             {
-                returnViewModel.Data = this.CustomerRepository.CreateCustomerData(model, connectString);
-                if (returnViewModel.Data == null)
-                {
-                    throw new ApplicationException("建立顧客失敗(CreateCustomerData)");
-                }
+                DataClassCustomerDataContext CustomerDataContext = new DataClassCustomerDataContext();
+                CustomerData customer = new CustomerData();
+                customer.CustomerId = model.CustomerId;
+                customer.CustomerName = model.CustomerName;
+                customer.CustomerAddr = model.CustomerAddr;
+                CustomerDataContext.CustomerData.InsertOnSubmit(customer);
+                CustomerDataContext.SubmitChanges();
                 returnViewModel.code = "200";
+                returnViewModel.message = "建立顧客成功!!";
             }
             catch (Exception e)
             {
@@ -55,11 +58,12 @@ namespace CustomerApi.Services.Customer
 
             try
             {
-                returnViewModel.Data = this.CustomerRepository.DeleteCustomerData(model, connectString);
-                if (returnViewModel.Data == null)
-                {
-                    throw new ApplicationException("刪除顧客失敗(DeleteCustomerData)");
-                }
+                DataClassCustomerDataContext CustomerDataContext = new DataClassCustomerDataContext();
+                CustomerData customer = CustomerDataContext.CustomerData.Single(p => p.CustomerId == model.CustomerId);
+                CustomerDataContext.CustomerData.DeleteOnSubmit(customer);
+                CustomerDataContext.SubmitChanges();
+                returnViewModel.message = "刪除顧客成功!!";
+
                 returnViewModel.code = "200";
             }
             catch (Exception e)
@@ -80,11 +84,12 @@ namespace CustomerApi.Services.Customer
 
             try
             {
-                returnViewModel.Data = this.CustomerRepository.EditCustomerData(model, connectString);
-                if (returnViewModel.Data == null)
-                {
-                    throw new ApplicationException("編輯顧客失敗(EditCustomerData)");
-                }
+                DataClassCustomerDataContext CustomerDataContext = new DataClassCustomerDataContext();
+                CustomerData customer = CustomerDataContext.CustomerData.Single(p => p.CustomerId == model.CustomerId);
+                customer.CustomerName = "Andy";
+                CustomerDataContext.SubmitChanges();
+                returnViewModel.message = "修改顧客資料成功!!";
+
                 returnViewModel.code = "200";
             }
             catch (Exception e)
@@ -104,8 +109,27 @@ namespace CustomerApi.Services.Customer
 
             try
             {
-                returnViewModel.Data = this.CustomerRepository.GetCustomerData(model, connectString);
+                DataClassCustomerDataContext CustomerDataContext = new DataClassCustomerDataContext();
+                var result = CustomerDataContext.CustomerData.AsEnumerable();
+
+                var finalresult = result.Select(p => new CustomerDataServiceViewModel()
+                    {
+                        CustomerName = p.CustomerName,
+                        CustomerId = p.CustomerId,
+                        CustomerAddr = p.CustomerAddr
+                    });
+
+                if (model.CustomerId.Trim() != "")
+                {
+                    finalresult = finalresult.Where(p => p.CustomerId == model.CustomerId);
+                }
+                if (model.KeyWord != "")
+                {
+                    finalresult = finalresult.Where(p => p.CustomerName.Contains(model.CustomerId)).AsQueryable();
+                }
+                returnViewModel.Data = finalresult;
                 returnViewModel.code = "200";
+                returnViewModel.message = "顧客資料存取成功!!";
             }
             catch (Exception e)
             {
